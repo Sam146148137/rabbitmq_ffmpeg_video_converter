@@ -35,14 +35,14 @@ exports.connect = async (req, res, next) => {
 
                     //both variants return same result
                     // const result = path.join(__dirname, 'converted', `${fakeName}`);
-                    const result = path.resolve(`converted/${fakeName}`);
+                    const result = path.resolve('converted', `${fakeName}`);
 
                     ffmpeg(source)
                         .output(result)
                         .on('error', function(err) {
                             console.log('error: ', err);
-                        }).on('end', async function () {
-
+                        })
+                        .on('end', async function () {
                         const convert = await Convert.findOne({converted: fakeName});
                         convert.status = 'ended';
                         convert.save();
@@ -57,7 +57,6 @@ exports.connect = async (req, res, next) => {
 
                         console.log(`${source} is converted`);
                     }).run();
-
                     setTimeout(function() {
                         channel.ack(msg);
                     }, 60000);
@@ -70,8 +69,3 @@ exports.connect = async (req, res, next) => {
         next(e);
     }
 };
-
-
-
-
-
